@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>School Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0c0e13;--card:#14171e;--card2:#10131a;--line:#242833;--tile:#0d0f14;--txt:#eceef5;--mut:#8b91a3;--dim:#5d6374;--ac:#7b82ff;--g5:#2ee6a6;--g4:#4da3ff;--g3:#f5b942;--g2:#ff8a5c;--g1:#ff5c7a;--red:#ff5c7a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--txt);font-family:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px}
+body{padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(40px + env(safe-area-inset-bottom,0px))}
+#app{max-width:440px;margin:0 auto}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+.tabs{display:flex;gap:2px;padding:4px;background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:16px}
+.tabs button{flex:1;padding:9px 0;border-radius:11px;color:var(--mut);font-weight:500}
+.tabs button.on{background:var(--ac);color:#fff;font-weight:600}
+h2{font-size:18px;margin:6px 4px 12px;font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
+.card h3{margin:0 0 12px;font-size:16px;font-weight:600}
+.row{display:flex;align-items:center;justify-content:space-between}
+.mut{color:var(--mut);font-size:12.5px}
+.btn{width:100%;padding:12px;border-radius:12px;font-weight:600}
+.pri{background:#232853;color:#8a90ff;border:2px solid #5b63e6}
+.neg{background:#2a1520;color:#ff6a85;border:1.5px solid #c93a56;font-size:14px}
+.neu{background:var(--tile);color:var(--mut);border:1px solid var(--line);font-size:14px}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.btns .pri{grid-column:1/-1}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stat{background:var(--tile);border:1px solid #1b1e27;border-radius:12px;padding:10px 4px;text-align:center}
+.stat b{display:block;font-size:22px;font-weight:700}.stat span{font-size:11.5px;color:var(--mut)}
+.heat{display:grid;grid-template-rows:repeat(7,1fr);grid-auto-flow:column;grid-auto-columns:1fr;gap:3px;margin-top:4px}
+.cell{aspect-ratio:1;border-radius:3px;background:#0f1218;border:1px solid #1d212b;cursor:pointer}
+.cell.we{background:#2b2f3b;border-color:#2b2f3b;cursor:default}
+.cell.p{background:var(--g4);border-color:var(--g4)}
+.cell.a{background:var(--red);border-color:var(--red)}
+.cell.n{background:repeating-linear-gradient(135deg,#3a3f4d 0 2px,#10131a 2px 4px);border-color:#2b2f3b}
+.cell.t{outline:2px solid var(--ac);outline-offset:0}
+.months{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:3px;font-size:9.5px;color:var(--dim);height:13px;margin-top:10px}
+.months span{white-space:nowrap;overflow:visible}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin:12px 0 8px;font-size:11.5px;color:var(--mut)}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.link{color:#8a90ff;font-weight:600;font-size:13.5px;margin-top:10px;display:block}
+.off{display:none;margin-top:10px;gap:8px}.off.show{display:flex}
+input,select{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;outline:0;width:100%;min-width:0}
+input::placeholder{color:var(--dim)}input:focus,select:focus{border-color:#4a50c0}
+.cls{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #1d212b}
+.cls:first-of-type{border-top:0}
+.cls .n{width:14px;color:var(--dim);font-size:14px}.cls .t{flex:1}.cls .t b{display:block;font-weight:600}
+.cls .t small{color:var(--mut);font-size:12px}
+.room{background:var(--tile);border:1px solid #1b1e27;border-radius:8px;padding:3px 8px;font-size:12px;color:#aab0c0;font-weight:600}
+.pill{background:#262b5c;color:#8f95ff;border-radius:8px;font-size:11.5px;font-weight:600;padding:3px 8px;white-space:nowrap}
+.pill.tm{background:#2e3470;color:#a9aeff}
+.test{position:relative;overflow:hidden;border-top:1px solid #1d212b}
+.test:first-of-type{border-top:0}
+.test .del{position:absolute;right:0;top:0;bottom:0;width:100%;background:#4a1a28;color:#ff7b93;display:flex;align-items:center;justify-content:flex-end;padding-right:16px;font-weight:600;font-size:13px}
+.test .in{position:relative;background:var(--card);display:flex;gap:12px;align-items:center;padding:10px 0;touch-action:pan-y;transition:transform .2s}
+.test .in b{font-weight:600;display:block}.test .in small{color:var(--mut);font-size:12px}
+.pill{min-width:70px;text-align:center}
+.add{display:grid;gap:8px;margin-top:12px}.add .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.add .go{background:#232853;color:#8a90ff;font-weight:600;padding:12px;border-radius:12px;border:1px solid #2f3575}
+.task{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #1d212b}
+.task:first-of-type{border-top:0}
+.task .ck{width:20px;height:20px;border-radius:6px;border:2px solid #3a3f4d;flex:none;display:grid;place-items:center;font-size:12px}
+.task.done .ck{background:var(--ac);border-color:var(--ac)}.task.done span{text-decoration:line-through;color:var(--dim)}
+.task .x{margin-left:auto;color:var(--dim);font-size:18px;padding:0 4px}
+/* grades */
+.ov{display:flex;gap:16px;align-items:center}
+.ring{position:relative;width:84px;height:84px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:25px;font-weight:700}
+.ov h3{font-size:19px;margin:0 0 4px}
+.dist{display:flex;gap:4px;margin-top:12px}.dist i{flex:1;height:5px;border-radius:3px;background:#262a35}
+.sub{display:flex;justify-content:space-between;align-items:center;margin:8px 4px 12px}
+.sub h2{margin:0}.sort{background:#22275a;color:#8f95ff;font-size:12px;font-weight:600;padding:5px 11px;border-radius:9px}
+.g{padding:14px}.g .top{display:flex;justify-content:space-between;align-items:flex-start}
+.g .top b{font-weight:600;font-size:15.5px;display:block}
+.avg{font-size:25px;font-weight:700}
+.chips{display:flex;gap:6px;margin:10px 0 10px;min-height:28px;flex-wrap:wrap}
+.chip{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font-weight:700;color:#0c0e13;font-size:14px}
+.nums{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.nums button{background:var(--tile);border:1px solid #1f232d;border-radius:11px;padding:11px 0;font-weight:600;color:#dfe2ec}
+.nums button:active{background:#22275a}
+.hint{color:var(--mut);font-size:13px;margin:12px 0 10px}
+.ds{text-align:right;margin-top:10px}.ds button{color:var(--mut);font-size:12.5px}
+.dash{width:14px;height:5px;border-radius:3px;background:#5d6374;margin-top:8px}
+.addsub{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:4px}
+.addsub button{background:var(--ac);color:#fff;font-weight:600;padding:0 18px;border-radius:12px}
+/* schedule */
+.days{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-bottom:18px}
+.days button{position:relative;padding:10px 0;background:var(--card);border:1px solid var(--line);border-radius:12px;font-weight:600;color:#cfd3e0;font-size:14px}
+.days button.on{border-color:var(--ac);background:#1c2048;color:#aab0ff}
+.days button .dot{position:absolute;top:5px;right:6px;width:5px;height:5px;border-radius:50%;background:var(--g5)}
+.dh{display:flex;justify-content:space-between;align-items:baseline;margin:0 2px 12px}
+.dh b{font-size:17px;font-weight:600}
+.les{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:12px;padding:9px 14px 9px 12px;margin-bottom:8px}
+.les .n{color:var(--dim);width:12px}.les .t{flex:1}.les b{font-weight:600;display:block;font-size:15.5px}.les small{color:var(--mut);font-size:12px}
+.les.free{border-left-color:var(--line);background:var(--card2)}.les.free b{color:var(--mut);font-weight:500}
+.brk{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);border:1px dashed #1d212b;background:#0f1218;border-radius:10px;padding:7px 12px;margin-bottom:8px;font-weight:500}
+.wk{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 10px}
+.wk table{border-collapse:separate;border-spacing:5px;min-width:100%}
+.wk th{font-size:11.5px;color:var(--mut);font-weight:500;padding:2px 0}
+.wk td{width:84px;height:48px;border-radius:9px;text-align:center;font-size:11.5px;font-weight:600;padding:3px;line-height:1.15;background:var(--tile)}
+.wk td.nn{width:14px;color:var(--dim);background:none;font-weight:500}
+.cell.pa{background:linear-gradient(135deg,var(--g4) 50%,var(--red) 50%);border-color:var(--red)}
+.ov2{position:fixed;inset:0;background:rgba(5,6,10,.72);display:grid;place-items:center;padding:16px;z-index:50}
+.sheet{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;width:100%;max-width:400px;max-height:88vh;overflow:auto}
+.sheet h3{margin:0 0 10px;font-size:17px}
+.mb{display:flex;gap:8px;margin-top:14px}
+.mb button{flex:1;padding:11px 4px;border-radius:12px;font-weight:600;background:var(--tile);border:1px solid var(--line);color:var(--mut)}
+.mb .ok{background:var(--ac);color:#fff;border-color:var(--ac)}.mb .dg{color:#ff6a85;border-color:#5a2433}
+.fl{font-size:12px;color:var(--mut);margin:10px 0 4px}
+.mrow{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;margin-bottom:6px;background:var(--tile);cursor:pointer}
+.mrow.on{background:#2a1520;border-color:#c93a56;color:#ff8da1}
+.sb{width:40px;height:40px;border-radius:12px;background:var(--tile);border:1px solid var(--line);font-size:20px;font-weight:600}
+.pb{display:flex;gap:8px;margin-top:12px}.pb button{flex:1;padding:11px;border:1px dashed #333847;border-radius:12px;color:var(--mut);font-size:13px;font-weight:600}
+.les,.test .in,.wk td[data-el]{cursor:pointer}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const DN=['Nedjelja','Ponedjeljak','Utorak','Srijeda','Četvrtak','Petak','Subota'];
+const DAYS=['Pon','Uto','Sri','Čet','Pet'], DFULL=['Ponedjeljak','Utorak','Srijeda','Četvrtak','Petak'];
+const MON=['sij','velj','ožu','tra','svi','lip','srp','kol','ruj','lis','stu','pro'];
+const DSLOTS=[['13:40','14:25'],['14:30','15:15'],['15:20','16:00'],['16:20','17:05'],['17:10','17:55'],['18:00','18:45'],['18:50','19:25']];
+const COL={'Engleski':'#7ac943','Informatika':'#d63a9d','POV':'#4a5fd8','Hrvatski':'#2fcf8a','Obiteljsko pravo':'#5b45d6','Ured za vježbu':'#2fd6a0','Vjeronauk':'#b5d334','Upravni postupak':'#d63a9d','Ustavni ustroj BiH':'#d63a9d','Tjelesni':'#e0364f','Matematika':'#3b82d9','Daktilografija':'#f08a3a','Francuski':'#3b82d9','Politika i gospodarstvo':'#7ac943','Sat razrednika':'#4a7fd8','Uredsko poslovanje':'#3b82d9','Izborni':'#9a7bd8'};
+// [subject, room]; null = free period. NOTE: Friday was not visible in the recordings — edit freely.
+const DSCH=[
+ [['Engleski','13'],['Informatika',''],['POV','32'],['Hrvatski','11'],['Obiteljsko pravo','P2'],['Ured za vježbu','P2'],['Vjeronauk','15']],
+ [['Upravni postupak','P2'],['Ustavni ustroj BiH','P1'],['Obiteljsko pravo','P2'],['Tjelesni',''],['Matematika','22'],['Ured za vježbu','P2'],['Daktilografija','P2V']],
+ [['Engleski','13'],['Hrvatski','11'],['Upravni postupak','P2'],['Ustavni ustroj BiH','P1'],['Uredsko poslovanje','P2V'],['Matematika','22'],null],
+ [['Engleski','13'],['Francuski','31'],['POV','32'],['Politika i gospodarstvo','P1'],['Sat razrednika','P3'],['Daktilografija',''],['Hrvatski','11']],
+ [['Izborni',''],['Matematika','22'],['Engleski','13'],['Tjelesni',''],['Informatika',''],null,null]];
+const SUBJECTS=['Informatika','Tjelesni','Daktilografija','Hrvatski','Politika i gospodarstvo','Engleski','Obiteljsko pravo','Ured za vježbu','Ustavni ustroj BiH','Matematika','Francuski','Vjeronauk','Upravni postupak','Uredsko poslovanje','POV'];
+const GRADES={Informatika:[5],Tjelesni:[5],Daktilografija:[5,4],Hrvatski:[4],'Politika i gospodarstvo':[3],Engleski:[3],'Ustavni ustroj BiH':[3],POV:[3],'Obiteljsko pravo':[2],'Ured za vježbu':[2],Matematika:[2],'Upravni postupak':[2],'Uredsko poslovanje':[2],Francuski:[1]};
+const T=(d,m,s,t)=>({s,d:`2026-${m}-${d}`,t:t||''});
+const TESTS=[T('22','10','POV'),T('23','10','Francuski / Njemački','Diktat'),T('27','10','Izborni'),T('29','10','Politika i gospodarstvo'),T('03','11','Ustavni ustroj BiH'),T('04','11','Matematika'),T('09','11','Obiteljsko pravo'),T('11','11','Upravni postupak'),T('18','11','Uredsko poslovanje'),T('20','11','Francuski / Njemački'),T('26','11','Engleski'),T('27','11','Informatika'),T('02','12','Matematika'),T('04','12','Francuski / Njemački','Zadaćnica?'),T('09','12','Hrvatski','Jezik'),T('10','12','Engleski')];
+
+const key=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const day0=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate());
+const fmt=d=>`${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.`;
+let START=new Date(2026,8,14);const COLS=21;
+const TODAY=day0(new Date());
+const dow=d=>(d.getDay()+6)%7; // 0 = Monday
+
+function seed(){
+  const marks={};
+  for(let d=new Date(START);d<TODAY;d.setDate(d.getDate()+1)) if(dow(d)<5) marks[key(d)]='p';
+  marks['2026-09-23']='a';marks['2026-10-09']='a';
+  ['2026-11-11','2026-12-03','2026-12-04','2026-12-11'].forEach(k=>marks[k]='n');
+  return marks;
+}
+let S;
+try{S=JSON.parse(localStorage.getItem('planner-v1'))}catch(e){}
+if(!S) S={tab:'today',sel:Math.min(dow(TODAY),5),marks:seed(),grades:JSON.parse(JSON.stringify(GRADES)),order:[...SUBJECTS],sort:'added',tests:TESTS,tasks:[]};
+S.sch=S.sch||JSON.parse(JSON.stringify(DSCH));S.slots=S.slots||JSON.parse(JSON.stringify(DSLOTS));S.miss=S.miss||{};
+if((S.ver||1)<2){S.ver=2;S.grades=JSON.parse(JSON.stringify(GRADES));S.order=[...SUBJECTS];
+ for(let d=new Date(2026,9,21);d<TODAY;d.setDate(d.getDate()+1)){const k=key(d);if(dow(d)<5&&!S.marks[k])S.marks[k]='p'}}
+if(S.start)START=new Date(S.start+'T00:00');
+let SCH=S.sch,SLOTS=S.slots;
+const hm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+const PAL=['#7ac943','#d63a9d','#4a5fd8','#2fcf8a','#5b45d6','#2fd6a0','#b5d334','#e0364f','#3b82d9','#f08a3a','#9a7bd8','#e0b43a'];
+const colOf=n=>COL[n]||PAL[[...n].reduce((a,c)=>a+c.charCodeAt(0),0)%PAL.length];
+const allSubs=()=>[...new Set([...S.order,...SCH.flat().filter(Boolean).map(l=>l[0]),...S.tests.map(t=>t.s)])].sort((a,b)=>a.localeCompare(b));
+const subsList=()=>`<datalist id="subs">${allSubs().map(s=>`<option value="${esc(s)}">`).join('')}</datalist>`;
+const save=()=>{try{localStorage.setItem('planner-v1',JSON.stringify(S))}catch(e){}};
+let offOpen=false;
+
+const mins=t=>{const[a,b]=t.split(':');return +a*60+ +b};
+const idx=d=>{const w=dow(d);return w>4?[]:SCH[w].map((l,i)=>l?i:-1).filter(i=>i>=0)};
+const slotMin=i=>mins(SLOTS[i][1])-mins(SLOTS[i][0]);
+const dayMins=d=>idx(d).reduce((a,i)=>a+slotMin(i),0);
+function dayInfo(d){const ix=idx(d),m=status(d)==='a'?(S.miss[key(d)]||ix).filter(i=>ix.includes(i)):[];return{ix,tot:ix.length,miss:m,att:ix.length-m.length,min:ix.filter(i=>!m.includes(i)).reduce((a,i)=>a+slotMin(i),0)}}
+const partial=d=>{const i=dayInfo(d);return i.tot&&i.miss.length<i.tot};
+function status(d){ // effective status of a day
+  const w=dow(d);if(w>4)return 'we';
+  const m=S.marks[key(d)];if(m)return m;
+  return d<TODAY&&d>=START?'a':'';
+}
+function stats(){
+  let tot=0,att=0,ms=0,n=0,min=0,streak=0;
+  for(let d=new Date(START);d<=TODAY;d.setDate(d.getDate()+1)){const s=status(d);
+    if(s==='p'||s==='a'){const i=dayInfo(d);tot+=i.tot;att+=i.att;ms+=i.miss.length;min+=i.min}else if(s==='n')n++}
+  for(let d=new Date(TODAY);d>=START;d.setDate(d.getDate()-1)){const s=status(d);if(s==='we'||s==='n')continue;
+    if(s==='p')streak++;else if(d<TODAY||s==='a')break}
+  return{tot,att,ms,n,streak,pct:tot?Math.round(att/tot*100):100,h:Math.floor(min/60),m:min%60};
+}
+const avgOf=g=>g.length?g.reduce((a,b)=>a+b,0)/g.length:null;
+const gcol=a=>a>=4.5?'var(--g5)':a>=3.5?'var(--g4)':a>=2.5?'var(--g3)':a>=1.5?'var(--g2)':'var(--g1)';
+
+function tabs(){return `<div class="tabs">${['today:Today','grades:Grades','schedule:Schedule'].map(x=>{const[k,l]=x.split(':');return `<button data-tab="${k}" class="${S.tab===k?'on':''}">${l}</button>`}).join('')}</div>`}
+
+function heat(){
+  let cells='',months='',last=-1;const g0=new Date(START);g0.setDate(g0.getDate()-dow(START)-7);
+  for(let c=0;c<COLS;c++){
+    const mon=new Date(g0);mon.setDate(mon.getDate()+c*7);
+    let lab='';for(let r=0;r<7;r++){const d=new Date(mon);d.setDate(d.getDate()+r);if(d.getDate()<=7&&d.getMonth()!==last&&r===0){lab=MON[d.getMonth()];last=d.getMonth()}}
+    months+=`<span>${lab}</span>`;
+    for(let r=0;r<7;r++){
+      const d=new Date(mon);d.setDate(d.getDate()+r);const k=key(d),s=r>4?'we':status(d);
+      let st='';if(s==='p'){const f=Math.max(.35,dayMins(d)/300);st=` style="opacity:${f>1?1:.45+.55*f*f}"`}
+      cells+=`<div class="cell ${s==='a'&&partial(d)?'pa':s} ${+d===+TODAY?'t':''}" data-d="${k}"${st}></div>`;
+    }
+  }
+  return `<div class="months">${months}</div><div class="heat">${cells}</div>`;
+}
+
+function today(){
+  const st=stats(),ts=status(TODAY),wk=dow(TODAY)>4,di=dayInfo(TODAY),L=idx(TODAY);
+  const ctl=wk?'':ts==='p'?`<button class="btn pri" data-m="">You’re at school today ✓</button><div style="height:12px"></div>`
+   :ts==='a'?`<button class="btn neg" data-m="e" style="margin-bottom:12px">Missed ${di.miss.length} of ${di.tot} classes today · edit</button>`
+   :ts==='n'?`<button class="btn neu" data-m="" style="margin-bottom:12px">No school today · undo</button>`
+   :`<div class="btns"><button class="btn pri" data-m="p">I went to school today</button><button class="btn neg" data-m="a">I’m not going to school today</button><button class="btn neu" data-m="n">No school today</button></div>`;
+  const up=S.tests.filter(t=>day0(new Date(t.d))>=TODAY).sort((a,b)=>a.d<b.d?-1:1);
+  return `<h2>${DN[TODAY.getDay()]}, ${fmt(TODAY)}</h2>
+  <div class="card"><h3>Attendance</h3>${ctl}
+   <div class="stats">
+    <div class="stat"><b style="color:var(--g5)">${st.pct}%</b><span>Attendance</span></div><div class="stat"><b>${st.tot}</b><span>Classes</span></div><div class="stat"><b>${st.att}</b><span>Attended</span></div>
+    <div class="stat"><b>${st.ms}</b><span>Missed</span></div><div class="stat"><b>${st.streak}</b><span>Streak</span></div><div class="stat"><b>${st.n}</b><span>Off days</span></div></div>
+   <div class="row" style="align-items:baseline"><b style="font-size:15px">${st.h}h ${st.m}m across ${st.att} classes</b><span class="mut" data-ss="1" style="cursor:pointer;text-decoration:underline dotted">since ${fmt(START)}</span></div>
+   ${heat()}
+   <div class="legend"><span><i style="background:var(--g4)"></i>Present</span><span><i style="background:var(--red)"></i>Absent</span><span><i style="background:linear-gradient(135deg,var(--g4) 50%,var(--red) 50%)"></i>Missed some</span><span><i style="background:#2b2f3b"></i>Weekend</span><span><i style="background:repeating-linear-gradient(135deg,#3a3f4d 0 2px,#10131a 2px 4px)"></i>No school</span></div>
+   <div class="mut" style="font-size:13.5px;line-height:1.35">Absent is automatic if you don’t tap a button. Tap any day to set which classes you missed.</div>
+   <a class="link" href="#" id="offT">${offOpen?'▼':'▶'} Add days off (holidays, breaks)</a>
+   <div class="off ${offOpen?'show':''}"><input type="date" id="offA"><button class="go btn" style="width:auto;padding:0 16px;background:#232853;color:#8a90ff" id="offB">Add</button></div></div>
+  <div class="card"><h3>Today’s classes</h3>${L.length?L.map(i=>{const l=SCH[dow(TODAY)][i];return `<div class="cls" style="${di.miss.includes(i)?'opacity:.4':''}"><span class="n">${i+1}</span><div class="t"><b>${esc(l[0])}</b><small>${SLOTS[i][0]} – ${SLOTS[i][1]}</small></div>${l[1]?`<span class="room">${esc(l[1])}</span>`:''}</div>`}).join(''):'<div class="mut">No classes today.</div>'}</div>
+  <div class="card"><div class="row"><h3 style="margin:0">Upcoming tests</h3><span class="mut">tap to edit · swipe left to delete</span></div>
+   <div style="margin-top:10px">${up.length?up.map(t=>{const dd=Math.round((day0(new Date(t.d))-TODAY)/864e5),i=S.tests.indexOf(t);
+     return `<div class="test"><div class="del">Delete</div><div class="in" data-i="${i}"><span class="pill ${dd===1?'tm':''}">${dd===0?'today':dd===1?'tomorrow':'in '+dd+' days'}</span><div><b>${esc(t.s)}</b><small>${t.t?esc(t.t)+' · ':''}${fmt(new Date(t.d))}</small></div></div></div>`}).join(''):'<div class="mut">No tests coming up.</div>'}</div>
+   <div class="add"><div class="two"><input id="tS" list="subs" placeholder="Subject"><input type="date" id="tD" value="${key(TODAY)}"></div>
+   <input id="tT" placeholder="Topic (optional)"><button class="go" id="tA">Add test</button></div></div>
+  <div class="card"><div class="row"><h3 style="margin:0">Revision tasks</h3><span class="mut">${S.tasks.filter(t=>!t.x).length} left</span></div>
+   <div style="margin-top:10px">${S.tasks.length?S.tasks.map((t,i)=>`<div class="task ${t.x?'done':''}"><div class="ck" data-k="${i}">${t.x?'✓':''}</div><span data-et="${i}" style="flex:1;cursor:pointer">${esc(t.t)}</span><button class="x" data-r="${i}">×</button></div>`).join(''):'<div class="mut">Nothing to revise. Add something below.</div>'}</div>
+   <div class="add"><input id="kT" placeholder="e.g. Read chapter 4 of POV"><button class="go" id="kA">Add task</button></div></div>`;
+}
+
+function grades(){
+  const all=S.order.map(n=>({n,g:S.grades[n]||[]}));
+  const gr=all.filter(x=>x.g.length),flat=gr.flatMap(x=>x.g);
+  const tot=flat.length?gr.reduce((s,x)=>s+Math.round(avgOf(x.g)),0)/gr.length:0;
+  const R=34,C=2*Math.PI*R,cnt=[1,2,3,4,5].map(k=>gr.filter(x=>Math.round(avgOf(x.g))===k).length);
+  let list=[...all];
+  if(S.sort==='average')list.sort((a,b)=>(avgOf(b.g)??-1)-(avgOf(a.g)??-1));
+  if(S.sort==='name')list.sort((a,b)=>a.n.localeCompare(b.n));
+  return `<div class="card"><div class="ov"><div class="ring"><svg width="84" height="84" viewBox="0 0 84 84"><circle cx="42" cy="42" r="${R}" fill="none" stroke="#242833" stroke-width="7"/><circle cx="42" cy="42" r="${R}" fill="none" stroke="${gcol(tot)}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${C*tot/5} ${C}"/></svg><b>${gr.length?tot.toFixed(2):'–'}</b></div>
+   <div style="flex:1"><h3>Overall average</h3><div class="mut" style="font-size:13.5px;line-height:1.35">Average of ${gr.length} graded subjects, ${all.length-gr.length} still empty.</div>
+   <div class="dist">${[1,2,3,4,5].map((k,i)=>`<i style="background:${cnt[i]?`var(--g${k})`:'#262a35'}"></i>`).join('')}</div></div></div></div>
+   <div class="sub"><h2>Subjects</h2><button class="sort" id="sortB">Sort: ${S.sort}</button></div>
+   ${list.map(x=>{const a=avgOf(x.g);return `<div class="card g"><div class="top"><div><b data-rn="${esc(x.n)}" style="cursor:pointer">${esc(x.n)}</b><span class="mut">${x.g.length?x.g.length+(x.g.length>1?' grades':' grade'):'No grades yet'}</span></div>${a!==null?`<span class="avg" style="color:${gcol(a)}">${a.toFixed(2)}</span>`:'<span class="dash"></span>'}</div>
+   ${x.g.length?`<div class="chips">${x.g.map((g,i)=>`<button class="chip" style="background:var(--g${g})" data-s="${esc(x.n)}" data-rm="${i}">${g}</button>`).join('')}</div>`:'<div class="hint">Tap a number below to add a grade</div>'}
+   <div class="nums">${[1,2,3,4,5].map(k=>`<button data-s="${esc(x.n)}" data-g="${k}">${k}</button>`).join('')}</div>
+   <div class="ds"><button data-ds="${esc(x.n)}">Delete subject</button></div></div>`}).join('')}
+   <div class="addsub"><input id="nS" placeholder="New subject"><button id="nA" style="padding:13px 18px">Add subject</button></div>`;
+}
+
+function schedule(){
+  const bar=`<div class="days">${DAYS.map((d,i)=>`<button class="${S.sel===i?'on':''}" data-d="${i}">${d}${dow(TODAY)===i?'<i class="dot"></i>':''}</button>`).join('')}<button class="${S.sel===5?'on':''}" data-d="5">Week</button></div>`;
+  const pb=`<div class="mut" style="text-align:center;margin:12px 0 0">Tap any lesson to edit it</div><div class="pb"><button data-pa="1">+ Add period</button><button data-pd="1">− Remove last</button></div>`;
+  if(S.sel===5){
+    const rows=SLOTS.map((_,r)=>`<tr><td class="nn">${r+1}</td>${SCH.map((d,w)=>{const l=d[r];return l?`<td data-el="${w},${r}" style="background:${colOf(l[0])}26;color:#e6e8f0">${esc(l[0])}</td>`:`<td data-el="${w},${r}"></td>`}).join('')}</tr>`).join('');
+    return bar+`<div class="wk"><table><tr><th></th>${DAYS.map(d=>`<th>${d}</th>`).join('')}</tr>${rows}</table></div>`+pb;
+  }
+  const d=SCH[S.sel],n=d.filter(Boolean).length,ix=idx0(S.sel),last=ix[ix.length-1];
+  let h='';d.forEach((l,i)=>{
+    if(i===3)h+=`<div class="brk"><span>Big break</span><span>${SLOTS[2][1]} – ${SLOTS[3][0]}</span></div>`;
+    h+=l?`<div class="les" data-el="${S.sel},${i}" style="--c:${colOf(l[0])}"><span class="n">${i+1}</span><div class="t"><b>${esc(l[0])}</b><small>${SLOTS[i][0]} – ${SLOTS[i][1]}</small></div>${l[1]?`<span class="room">${esc(l[1])}</span>`:''}</div>`
+     :`<div class="les free" data-el="${S.sel},${i}"><span class="n">${i+1}</span><div class="t"><b>Free period</b><small>${SLOTS[i][0]} – ${SLOTS[i][1]}</small></div></div>`});
+  return bar+`<div class="dh"><b>${DFULL[S.sel]}</b><span class="mut">${n?`${n} lessons · ${SLOTS[ix[0]][0]}–${SLOTS[last][1]}`:'No lessons'}</span></div>`+h+pb;
+}
+const idx0=w=>SCH[w].map((l,i)=>l?i:-1).filter(i=>i>=0);
+
+function render(){
+  const y=window.scrollY;
+  $('#app').innerHTML=subsList()+tabs()+(S.tab==='today'?today():S.tab==='grades'?grades():schedule());
+  window.scrollTo(0,y);save();
+}
+
+function modal(title,body,btns,extra){
+  const o=document.createElement('div');o.className='ov2';
+  o.innerHTML=`<div class="sheet"><h3>${title}</h3><div id="mbody">${typeof body==='function'?body():body}</div><div class="mb">${btns.map((b,i)=>`<button class="${b[1]}" data-b="${i}">${b[0]}</button>`).join('')}</div></div>`;
+  document.body.appendChild(o);const close=()=>o.remove();
+  o.addEventListener('click',e=>{e.stopPropagation();if(e.target===o)return close();const b=e.target.closest('[data-b]');if(b&&btns[+b.dataset.b][2]()!==false)close()});
+  if(extra)o.addEventListener('click',e=>{extra(e);if(typeof body==='function')o.querySelector('#mbody').innerHTML=body()});
+  const f=o.querySelector('input');if(f&&f.type==='text')f.focus();
+}
+function dayModal(k,all){
+  const d=new Date(k+'T00:00'),ix=idx(d),w=dow(d);
+  let sel=all?[...ix]:dayInfo(d).miss.slice();
+  const body=()=>ix.length?`<div class="mut" style="margin-bottom:10px">${DN[d.getDay()]}, ${fmt(d)} · how many classes did you miss?</div>
+   <div class="row" style="margin-bottom:10px"><button class="sb" data-st="-">−</button><b style="font-size:17px">${sel.length} of ${ix.length} missed</b><button class="sb" data-st="+">+</button></div>
+   ${ix.map(i=>`<div class="mrow ${sel.includes(i)?'on':''}" data-t="${i}"><span class="mut">${i+1}</span><b style="flex:1;font-weight:600">${esc(SCH[w][i][0])}</b><small class="mut">${SLOTS[i][0]}</small><span>${sel.includes(i)?'✕':''}</span></div>`).join('')}`
+   :`<div class="mut">${DN[d.getDay()]}, ${fmt(d)} · no classes scheduled.</div>`;
+  modal('Classes missed',body,[['Save','ok',()=>{if(sel.length){S.marks[k]='a';S.miss[k]=sel.slice()}else{S.marks[k]='p';delete S.miss[k]}render()}],['No school','',()=>{S.marks[k]='n';delete S.miss[k];render()}],['Cancel','',()=>{}]],e=>{
+    const r=e.target.closest('[data-t]'),b=e.target.closest('[data-st]');
+    if(r){const i=+r.dataset.t;sel=sel.includes(i)?sel.filter(x=>x!==i):[...sel,i].sort((a,b)=>a-b)}
+    if(b){if(b.dataset.st==='+'){const n=ix.find(i=>!sel.includes(i));if(n!==undefined)sel=[...sel,n].sort((a,b)=>a-b)}else sel=sel.slice(0,-1)}});
+}
+function lessonModal(w,i){
+  const l=SCH[w][i],sl=SLOTS[i];
+  modal(`${DFULL[w]} · period ${i+1}`,`<div class="fl">Subject (empty = free period)</div><input id="mS" type="text" list="subs" value="${esc(l?l[0]:'')}" placeholder="Subject"><div class="fl">Room</div><input id="mR" value="${esc(l?l[1]:'')}" placeholder="Room"><div class="fl">Period time (applies to every day)</div><div class="add" style="margin:0"><div class="two"><input type="time" id="mA" value="${sl[0]}"><input type="time" id="mB" value="${sl[1]}"></div></div>`,
+   [['Save','ok',()=>{const v=$('#mS').value.trim();SCH[w][i]=v?[v,$('#mR').value.trim()]:null;SLOTS[i]=[$('#mA').value||sl[0],$('#mB').value||sl[1]];render()}],['Clear','dg',()=>{SCH[w][i]=null;render()}],['Cancel','',()=>{}]]);
+}
+function testModal(i){
+  const t=S.tests[i];
+  modal('Edit test',`<div class="fl">Subject</div><input id="eS" type="text" list="subs" value="${esc(t.s)}"><div class="fl">Date</div><input type="date" id="eD" value="${t.d}"><div class="fl">Topic</div><input id="eT" value="${esc(t.t)}" placeholder="Topic (optional)">`,
+   [['Save','ok',()=>{const v=$('#eS').value.trim();if(!v||!$('#eD').value)return false;Object.assign(t,{s:v,d:$('#eD').value,t:$('#eT').value.trim()});render()}],['Delete','dg',()=>{S.tests.splice(i,1);render()}],['Cancel','',()=>{}]]);
+}
+function textModal(title,val,onSave,onDel,type){
+  modal(title,`<input id="xV" type="${type||'text'}" value="${esc(val)}">`,[['Save','ok',()=>{const v=$('#xV').value.trim();if(!v)return false;onSave(v);render()}],...(onDel?[['Delete','dg',()=>{onDel();render()}]]:[]),['Cancel','',()=>{}]]);
+}
+const addPeriod=()=>{const e=mins(SLOTS[SLOTS.length-1][1]);SLOTS.push([hm(e+5),hm(e+50)]);SCH.forEach(d=>d.push(null))};
+const delPeriod=()=>{if(SLOTS.length>1){SLOTS.pop();SCH.forEach(d=>d.pop())}};
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,a,.cell,.ck,.in,.les,td[data-el],[data-rn],[data-et],[data-ss]');if(!t)return;
+  if(t.dataset.el){const[w,i]=t.dataset.el.split(',').map(Number);return lessonModal(w,i)}
+  if(t.dataset.pa){addPeriod();return render()}
+  if(t.dataset.pd){delPeriod();return render()}
+  if(t.classList.contains('in')){if(Math.abs(lastDx)<8)testModal(+t.dataset.i);return}
+  if(t.dataset.rn){const o=t.dataset.rn;return textModal('Rename subject',o,v=>{if(v!==o&&S.order.includes(v))return;S.order=S.order.map(n=>n===o?v:n);if(S.grades[o]){S.grades[v]=S.grades[o];if(v!==o)delete S.grades[o]}})}
+  if(t.dataset.et){const i=+t.dataset.et;return textModal('Edit task',S.tasks[i].t,v=>{S.tasks[i].t=v},()=>S.tasks.splice(i,1))}
+  if(t.dataset.ss){return textModal('Tracking since',key(START),v=>{S.start=v;START=new Date(v+'T00:00')},null,'date')}
+  if(t.dataset.tab){S.tab=t.dataset.tab;window.scrollTo(0,0);return render()}
+  if(t.dataset.d!==undefined&&t.closest('.days')){S.sel=+t.dataset.d;return render()}
+  if(t.dataset.m!==undefined){const k=key(TODAY),m=t.dataset.m;if(m==='a')return dayModal(k,true);if(m==='e')return dayModal(k,false);m?S.marks[k]=m:delete S.marks[k];delete S.miss[k];return render()}
+  if(t.classList.contains('cell')){const d=new Date(t.dataset.d+'T00:00');if(dow(d)>4)return;
+    if(d>TODAY){S.marks[t.dataset.d]==='n'?delete S.marks[t.dataset.d]:S.marks[t.dataset.d]='n';return render()}
+    return dayModal(t.dataset.d,false)}
+  if(t.id==='offT'){e.preventDefault();offOpen=!offOpen;return render()}
+  if(t.id==='offB'){const v=$('#offA').value;if(v)delete S.miss[v];if(v){S.marks[v]='n';render()}return}
+  if(t.id==='tA'){const d=$('#tD').value,sb=$('#tS').value.trim();if(d&&sb){S.tests.push({s:sb,d,t:$('#tT').value.trim()});render()}return}
+  if(t.id==='kA'){const v=$('#kT').value.trim();if(v){S.tasks.push({t:v,x:0});render()}return}
+  if(t.classList.contains('ck')){S.tasks[+t.dataset.k].x^=1;return render()}
+  if(t.dataset.r!==undefined){S.tasks.splice(+t.dataset.r,1);return render()}
+  if(t.id==='sortB'){S.sort={added:'average',average:'name',name:'added'}[S.sort];return render()}
+  if(t.dataset.g){(S.grades[t.dataset.s]=S.grades[t.dataset.s]||[]).push(+t.dataset.g);return render()}
+  if(t.dataset.rm!==undefined){S.grades[t.dataset.s].splice(+t.dataset.rm,1);return render()}
+  if(t.dataset.ds){S.order=S.order.filter(n=>n!==t.dataset.ds);delete S.grades[t.dataset.ds];return render()}
+  if(t.id==='nA'){const v=$('#nS').value.trim();if(v&&!S.order.includes(v)){S.order.push(v);render()}return}
+});
+
+// swipe left to delete a test (touch + mouse)
+let sw=null,lastDx=0;
+document.addEventListener('pointerdown',e=>{lastDx=0;const el=e.target.closest('.test .in');if(el)sw={el,x:e.clientX,dx:0}});
+document.addEventListener('pointermove',e=>{if(!sw)return;sw.dx=Math.min(0,e.clientX-sw.x);sw.el.style.transition='none';sw.el.style.transform=`translateX(${sw.dx}px)`});
+const end=()=>{if(!sw)return;const{el,dx}=sw;sw=null;lastDx=dx;el.style.transition='';
+  if(dx<-70){el.style.transform='translateX(-100%)';setTimeout(()=>{S.tests.splice(+el.dataset.i,1);render()},180)}else el.style.transform=''};
+document.addEventListener('pointerup',end);document.addEventListener('pointercancel',end);
+render();
+</script>
+</body>
+</html>
