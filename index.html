@@ -4,14 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>School Planner</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&display=swap" rel="stylesheet">
+<title>index</title>
 <style>
 :root{--bg:#0c0e13;--card:#14171e;--card2:#10131a;--line:#242833;--tile:#0d0f14;--txt:#eceef5;--mut:#8b91a3;--dim:#5d6374;--ac:#7b82ff;--g5:#2ee6a6;--g4:#4da3ff;--g3:#f5b942;--g2:#ff8a5c;--g1:#ff5c7a;--red:#ff5c7a}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--txt);font-family:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px}
+@font-face{font-family:'JetBrainsMono Nerd Font';src:url('./fonts/JetBrainsMonoNerdFont-Regular.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
+html,body{margin:0;background:var(--bg);color:var(--txt);font-family:'JetBrainsMono Nerd Font',ui-monospace,SFMono-Regular,monospace;font-size:15px}
 body{padding:calc(12px + env(safe-area-inset-top,0px)) 12px calc(40px + env(safe-area-inset-bottom,0px))}
 #app{max-width:440px;margin:0 auto}
 button,input,select{font:inherit;color:inherit}
@@ -139,9 +137,7 @@ const DSCH=[
  [['Engleski','13'],['Francuski','31'],['POV','32'],['Politika i gospodarstvo','P1'],['Sat razrednika','P3'],['Daktilografija',''],['Hrvatski','11']],
  [['Izborni',''],['Matematika','22'],['Engleski','13'],['Tjelesni',''],['Informatika',''],null,null]];
 const SUBJECTS=['Informatika','Tjelesni','Daktilografija','Hrvatski','Politika i gospodarstvo','Engleski','Obiteljsko pravo','Ured za vježbu','Ustavni ustroj BiH','Matematika','Francuski','Vjeronauk','Upravni postupak','Uredsko poslovanje','POV'];
-const GRADES={Informatika:[5],Tjelesni:[5],Daktilografija:[5,4],Hrvatski:[4],'Politika i gospodarstvo':[3],Engleski:[3],'Ustavni ustroj BiH':[3],POV:[3],'Obiteljsko pravo':[2],'Ured za vježbu':[2],Matematika:[2],'Upravni postupak':[2],'Uredsko poslovanje':[2],Francuski:[1]};
-const T=(d,m,s,t)=>({s,d:`2026-${m}-${d}`,t:t||''});
-const TESTS=[T('22','10','POV'),T('23','10','Francuski / Njemački','Diktat'),T('27','10','Izborni'),T('29','10','Politika i gospodarstvo'),T('03','11','Ustavni ustroj BiH'),T('04','11','Matematika'),T('09','11','Obiteljsko pravo'),T('11','11','Upravni postupak'),T('18','11','Uredsko poslovanje'),T('20','11','Francuski / Njemački'),T('26','11','Engleski'),T('27','11','Informatika'),T('02','12','Matematika'),T('04','12','Francuski / Njemački','Zadaćnica?'),T('09','12','Hrvatski','Jezik'),T('10','12','Engleski')];
+
 
 const key=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const day0=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate());
@@ -159,10 +155,13 @@ function seed(){
 }
 let S;
 try{S=JSON.parse(localStorage.getItem('planner-v1'))}catch(e){}
-if(!S) S={tab:'today',sel:Math.min(dow(TODAY),5),marks:seed(),grades:JSON.parse(JSON.stringify(GRADES)),order:[...SUBJECTS],sort:'added',tests:TESTS,tasks:[]};
+if(!S) S={tab:'today',sel:Math.min(dow(TODAY),5),marks:seed(),grades:{},order:[...SUBJECTS],sort:'added',tests:[],tasks:[],ver:3};
 S.sch=S.sch||JSON.parse(JSON.stringify(DSCH));S.slots=S.slots||JSON.parse(JSON.stringify(DSLOTS));S.miss=S.miss||{};
-if((S.ver||1)<2){S.ver=2;S.grades=JSON.parse(JSON.stringify(GRADES));S.order=[...SUBJECTS];
+// Privacy-safe migration: preserve any grades/tests already saved on this device.
+S.grades=S.grades||{};S.order=S.order||[...SUBJECTS];if(!Array.isArray(S.tests))S.tests=[];
+if((S.ver||1)<2){S.ver=2;
  for(let d=new Date(2026,9,21);d<TODAY;d.setDate(d.getDate()+1)){const k=key(d);if(dow(d)<5&&!S.marks[k])S.marks[k]='p'}}
+S.ver=3;
 if(S.start)START=new Date(S.start+'T00:00');
 let SCH=S.sch,SLOTS=S.slots;
 const hm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
