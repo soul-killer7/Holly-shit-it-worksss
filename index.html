@@ -6,7 +6,7 @@
 <meta name="color-scheme" content="dark">
 <title>index</title>
 <style>
-:root{--bg:#0c0e13;--card:#14171e;--card2:#10131a;--line:#242833;--tile:#0d0f14;--txt:#eceef5;--mut:#8b91a3;--dim:#5d6374;--ac:#7b82ff;--g5:#2ee6a6;--g4:#4da3ff;--g3:#f5b942;--g2:#ff8a5c;--g1:#ff5c7a;--red:#ff5c7a}
+:root{--bg:#1a1b26;--card:#24283b;--card2:#1f2335;--line:#414868;--tile:#1f2335;--txt:#c0caf5;--mut:#a9b1d6;--dim:#565f89;--ac:#7aa2f7;--g5:#9ece6a;--g4:#7dcfff;--g3:#e0af68;--g2:#ff9e64;--g1:#f7768e;--red:#f7768e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 @font-face{font-family:'JetBrainsMono Nerd Font';src:url('./fonts/JetBrainsMonoNerdFont-Regular.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
 html,body{margin:0;background:var(--bg);color:var(--txt);font-family:'JetBrainsMono Nerd Font',ui-monospace,SFMono-Regular,monospace;font-size:15px}
@@ -23,7 +23,7 @@ h2{font-size:18px;margin:6px 4px 12px;font-weight:600}
 .row{display:flex;align-items:center;justify-content:space-between}
 .mut{color:var(--mut);font-size:12.5px}
 .btn{width:100%;padding:12px;border-radius:12px;font-weight:600}
-.pri{background:#232853;color:#8a90ff;border:2px solid #5b63e6}
+.pri{background:#2f3b5b;color:#c0caf5;border:2px solid #5b63e6}
 .neg{background:#2a1520;color:#ff6a85;border:1.5px solid #c93a56;font-size:14px}
 .neu{background:var(--tile);color:var(--mut);border:1px solid var(--line);font-size:14px}
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
@@ -60,7 +60,7 @@ input::placeholder{color:var(--dim)}input:focus,select:focus{border-color:#4a50c
 .test .in b{font-weight:600;display:block}.test .in small{color:var(--mut);font-size:12px}
 .pill{min-width:70px;text-align:center}
 .add{display:grid;gap:8px;margin-top:12px}.add .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.add .go{background:#232853;color:#8a90ff;font-weight:600;padding:12px;border-radius:12px;border:1px solid #2f3575}
+.add .go{background:#2f3b5b;color:#c0caf5;font-weight:600;padding:12px;border-radius:12px;border:1px solid #2f3575}
 .task{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #1d212b}
 .task:first-of-type{border-top:0}
 .task .ck{width:20px;height:20px;border-radius:6px;border:2px solid #3a3f4d;flex:none;display:grid;place-items:center;font-size:12px}
@@ -117,6 +117,35 @@ input::placeholder{color:var(--dim)}input:focus,select:focus{border-color:#4a50c
 .sb{width:40px;height:40px;border-radius:12px;background:var(--tile);border:1px solid var(--line);font-size:20px;font-weight:600}
 .pb{display:flex;gap:8px;margin-top:12px}.pb button{flex:1;padding:11px;border:1px dashed #333847;border-radius:12px;color:var(--mut);font-size:13px;font-weight:600}
 .les,.test .in,.wk td[data-el]{cursor:pointer}
+
+/* Tokyo Night theme accents */
+.pri,.add .go{background:#2f3b5b;color:#c0caf5;border-color:#7aa2f7}
+.neg{background:#3b2635;color:#f7768e;border-color:#f7768e}
+.stat{border-color:#414868}
+.cell{background:#1f2335;border-color:#414868}
+.cell.we{background:#292e42;border-color:#292e42}
+.cell.n{background:repeating-linear-gradient(135deg,#565f89 0 2px,#1f2335 2px 4px);border-color:#414868}
+.link{color:#7aa2f7}
+input:focus,select:focus{border-color:#7aa2f7}
+.cls{border-top-color:#414868}
+.room{color:#a9b1d6;border-color:#414868}
+.pill{background:#2f3b5b;color:#a9b1d6}
+.pill.tm{background:#394b70;color:#c0caf5}
+.test{border-top-color:#414868}
+.test .del{background:#3b2635;color:#f7768e}
+.task{border-top-color:#414868}
+.task .ck{border-color:#565f89}
+.dist i{background:#414868}
+.sort{background:#2f3b5b;color:#c0caf5}
+.nums button{border-color:#414868;color:#c0caf5}
+.nums button:active{background:#2f3b5b}
+.days button{color:#c0caf5}
+.days button.on{background:#2f3b5b;color:#c0caf5}
+.brk{border-color:#414868;background:#1f2335}
+.mb .dg{color:#f7768e;border-color:#6b3345}
+.mrow.on{background:#3b2635;border-color:#f7768e;color:#f7768e}
+.pb button{border-color:#414868}
+
 </style>
 </head>
 <body>
@@ -128,7 +157,7 @@ const DN=['Nedjelja','Ponedjeljak','Utorak','Srijeda','Četvrtak','Petak','Subot
 const DAYS=['Pon','Uto','Sri','Čet','Pet'], DFULL=['Ponedjeljak','Utorak','Srijeda','Četvrtak','Petak'];
 const MON=['sij','velj','ožu','tra','svi','lip','srp','kol','ruj','lis','stu','pro'];
 const DSLOTS=[['13:40','14:25'],['14:30','15:15'],['15:20','16:00'],['16:20','17:05'],['17:10','17:55'],['18:00','18:45'],['18:50','19:25']];
-const COL={'Engleski':'#7ac943','Informatika':'#d63a9d','POV':'#4a5fd8','Hrvatski':'#2fcf8a','Obiteljsko pravo':'#5b45d6','Ured za vježbu':'#2fd6a0','Vjeronauk':'#b5d334','Upravni postupak':'#d63a9d','Ustavni ustroj BiH':'#d63a9d','Tjelesni':'#e0364f','Matematika':'#3b82d9','Daktilografija':'#f08a3a','Francuski':'#3b82d9','Politika i gospodarstvo':'#7ac943','Sat razrednika':'#4a7fd8','Uredsko poslovanje':'#3b82d9','Izborni':'#9a7bd8'};
+const COL={'Engleski':'#9ece6a','Informatika':'#bb9af7','POV':'#7aa2f7','Hrvatski':'#73daca','Obiteljsko pravo':'#bb9af7','Ured za vježbu':'#73daca','Vjeronauk':'#e0af68','Upravni postupak':'#bb9af7','Ustavni ustroj BiH':'#bb9af7','Tjelesni':'#f7768e','Matematika':'#7dcfff','Daktilografija':'#ff9e64','Francuski':'#7dcfff','Politika i gospodarstvo':'#9ece6a','Sat razrednika':'#7aa2f7','Uredsko poslovanje':'#7dcfff','Izborni':'#bb9af7'};
 // [subject, room]; null = free period. NOTE: Friday was not visible in the recordings — edit freely.
 const DSCH=[
  [['Engleski','13'],['Informatika',''],['POV','32'],['Hrvatski','11'],['Obiteljsko pravo','P2'],['Ured za vježbu','P2'],['Vjeronauk','15']],
@@ -165,7 +194,7 @@ S.ver=3;
 if(S.start)START=new Date(S.start+'T00:00');
 let SCH=S.sch,SLOTS=S.slots;
 const hm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
-const PAL=['#7ac943','#d63a9d','#4a5fd8','#2fcf8a','#5b45d6','#2fd6a0','#b5d334','#e0364f','#3b82d9','#f08a3a','#9a7bd8','#e0b43a'];
+const PAL=['#9ece6a','#bb9af7','#7aa2f7','#73daca','#bb9af7','#73daca','#e0af68','#f7768e','#7dcfff','#ff9e64','#bb9af7','#e0af68'];
 const colOf=n=>COL[n]||PAL[[...n].reduce((a,c)=>a+c.charCodeAt(0),0)%PAL.length];
 const allSubs=()=>[...new Set([...S.order,...SCH.flat().filter(Boolean).map(l=>l[0]),...S.tests.map(t=>t.s)])].sort((a,b)=>a.localeCompare(b));
 const subsList=()=>`<datalist id="subs">${allSubs().map(s=>`<option value="${esc(s)}">`).join('')}</datalist>`;
@@ -228,7 +257,7 @@ function today(){
    <div class="legend"><span><i style="background:var(--g4)"></i>Present</span><span><i style="background:var(--red)"></i>Absent</span><span><i style="background:linear-gradient(135deg,var(--g4) 50%,var(--red) 50%)"></i>Missed some</span><span><i style="background:#2b2f3b"></i>Weekend</span><span><i style="background:repeating-linear-gradient(135deg,#3a3f4d 0 2px,#10131a 2px 4px)"></i>No school</span></div>
    <div class="mut" style="font-size:13.5px;line-height:1.35">Absent is automatic if you don’t tap a button. Tap any day to set which classes you missed.</div>
    <a class="link" href="#" id="offT">${offOpen?'▼':'▶'} Add days off (holidays, breaks)</a>
-   <div class="off ${offOpen?'show':''}"><input type="date" id="offA"><button class="go btn" style="width:auto;padding:0 16px;background:#232853;color:#8a90ff" id="offB">Add</button></div></div>
+   <div class="off ${offOpen?'show':''}"><input type="date" id="offA"><button class="go btn" style="width:auto;padding:0 16px;background:#2f3b5b;color:#c0caf5" id="offB">Add</button></div></div>
   <div class="card"><h3>Today’s classes</h3>${L.length?L.map(i=>{const l=SCH[dow(TODAY)][i];return `<div class="cls" style="${di.miss.includes(i)?'opacity:.4':''}"><span class="n">${i+1}</span><div class="t"><b>${esc(l[0])}</b><small>${SLOTS[i][0]} – ${SLOTS[i][1]}</small></div>${l[1]?`<span class="room">${esc(l[1])}</span>`:''}</div>`}).join(''):'<div class="mut">No classes today.</div>'}</div>
   <div class="card"><div class="row"><h3 style="margin:0">Upcoming tests</h3><span class="mut">tap to edit · swipe left to delete</span></div>
    <div style="margin-top:10px">${up.length?up.map(t=>{const dd=Math.round((day0(new Date(t.d))-TODAY)/864e5),i=S.tests.indexOf(t);
@@ -248,9 +277,9 @@ function grades(){
   let list=[...all];
   if(S.sort==='average')list.sort((a,b)=>(avgOf(b.g)??-1)-(avgOf(a.g)??-1));
   if(S.sort==='name')list.sort((a,b)=>a.n.localeCompare(b.n));
-  return `<div class="card"><div class="ov"><div class="ring"><svg width="84" height="84" viewBox="0 0 84 84"><circle cx="42" cy="42" r="${R}" fill="none" stroke="#242833" stroke-width="7"/><circle cx="42" cy="42" r="${R}" fill="none" stroke="${gcol(tot)}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${C*tot/5} ${C}"/></svg><b>${gr.length?tot.toFixed(2):'–'}</b></div>
+  return `<div class="card"><div class="ov"><div class="ring"><svg width="84" height="84" viewBox="0 0 84 84"><circle cx="42" cy="42" r="${R}" fill="none" stroke="#414868" stroke-width="7"/><circle cx="42" cy="42" r="${R}" fill="none" stroke="${gcol(tot)}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${C*tot/5} ${C}"/></svg><b>${gr.length?tot.toFixed(2):'–'}</b></div>
    <div style="flex:1"><h3>Overall average</h3><div class="mut" style="font-size:13.5px;line-height:1.35">Average of ${gr.length} graded subjects, ${all.length-gr.length} still empty.</div>
-   <div class="dist">${[1,2,3,4,5].map((k,i)=>`<i style="background:${cnt[i]?`var(--g${k})`:'#262a35'}"></i>`).join('')}</div></div></div></div>
+   <div class="dist">${[1,2,3,4,5].map((k,i)=>`<i style="background:${cnt[i]?`var(--g${k})`:'#414868'}"></i>`).join('')}</div></div></div></div>
    <div class="sub"><h2>Subjects</h2><button class="sort" id="sortB">Sort: ${S.sort}</button></div>
    ${list.map(x=>{const a=avgOf(x.g);return `<div class="card g"><div class="top"><div><b data-rn="${esc(x.n)}" style="cursor:pointer">${esc(x.n)}</b><span class="mut">${x.g.length?x.g.length+(x.g.length>1?' grades':' grade'):'No grades yet'}</span></div>${a!==null?`<span class="avg" style="color:${gcol(a)}">${a.toFixed(2)}</span>`:'<span class="dash"></span>'}</div>
    ${x.g.length?`<div class="chips">${x.g.map((g,i)=>`<button class="chip" style="background:var(--g${g})" data-s="${esc(x.n)}" data-rm="${i}">${g}</button>`).join('')}</div>`:'<div class="hint">Tap a number below to add a grade</div>'}
